@@ -14,7 +14,12 @@ function handleWebsocket(ws: WebSocket, upstream: WebSocket) {
 
   ws.addEventListener("message", (e) => {
     // TODO: should block this event to upstream?
-    upstream.send(e.data);
+
+    if (upstream.readyState === WebSocket.OPEN) {
+      upstream.send(e.data);
+    } else {
+      ws.close();
+    }
   });
 }
 
