@@ -21,7 +21,12 @@ function handleWebsocket(ws: WebSocket, upstream: WebSocket) {
 function connect(url: string, source: WebSocket): Promise<WebSocket> {
   return new Promise((resolve, reject) => {
     const ws = new WebSocket(`wss://${url}`);
-    ws.addEventListener("error", reject);
+    ws.addEventListener("error", (err) => {
+      console.error(err);
+      ws.close();
+      source.close();
+      reject(err);
+    });
     ws.addEventListener("close", () => source.close());
     ws.addEventListener("open", () => resolve(ws));
 
